@@ -4,93 +4,108 @@
 #include <list>
 #include <unordered_map>
 #include <cassert>
+#include <fstream>
 
 namespace lfu {
 
-template <typename T, typename KeyT>
+template <typename KeyType, typename ValueType>
 class lfu_cache_t {
- public:
-    using frequency   = size_t;
+ private:
+    using frequency = size_t;
+
     struct Node{
-        T value_;
+        ValueType value_;
         frequency frequency_;
-        using CacheListIt = typename std::list<std::pair<KeyT, Node>>::iterator;
-        CacheListIt it_;
     };
 
-    using CacheList   = typename std::list<std::pair<KeyT, Node>>;
+    using CacheList   = typename std::list<std::pair<KeyType, Node>>;
+    using CacheListIt = typename CacheList::iterator;
 
-    size_t capacity_;
+    size_t cache_size_ = 0;
     size_t hits_ = 0;
-    frequency min_frequency_ = 1;
+    const frequency basic_frequency = 1;
+    frequency min_frequency_ = 0;
 
     std::unordered_map<frequency, CacheList> lists_;
-    std::unordered_map<KeyT, Node> nodes_;
+    std::unordered_map<KeyType, CacheListIt> nodes_;
 
-    bool full() {return nodes_.size() == capacity_;};
-    size_t retHits() {return hits_;};
+ public:
+    bool full() const {return nodes_.size() == cache_size_;}
+    size_t retHits() const {return hits_;}
 
-    lfu_cache_t(size_t capacity): capacity_(capacity){};
+    lfu_cache_t(size_t capacity): cache_size_(capacity){};
 
-    /*TODO ret smth*/ void lookupUpdate(const KeyT& key, const T& value) {
+    template <typename Function> void lookupUpdate(Function slowGetPage, const KeyType& key) {
         if (!nodes_.contains(key)) {
             if (full())
                 deleteElem();
 
-            Node new_node;
-            new_node.value_ = value;
-            new_node.frequency_ = 1;
+            ValueType value = slowGetPage(key);
 
-            insertElem(key, new_node);
-            min_frequency_ = 1;
+            insertElem(key, value);
+            min_frequency_ = basic_frequency;
         }
         else {
             ++hits_;
             updateElem(key);
 
-            for (; min_frequency_ < capacity_; ++min_frequency_) {
+            for (; min_frequency_ < cache_size_; ++min_frequency_) {
                 if (lists_.contains(min_frequency_))
                     break;
             }
         }
     }
 
- private:
-    /*TODO NOT VOID*/ void addNewFrequency(const frequency new_frequency) {
-        CacheList new_list;
-        auto [it, isInserted] = lists_.insert({new_frequency, new_list});
+    void addNewFrequency(const frequency new_frequency) {
+        lists_.try_emplace(new_frequency);
     }
 
-    void insertElem(const KeyT& key, Node& new_node) {
-        addNewFrequency(new_node.frequency_);
-        CacheList& new_list = lists_.at(new_node.frequency_);
-        new_list.push_back({key, new_node});
-        new_node.it_ = new_list.begin();
-        nodes_.insert({key, new_node});
+    void insertElem(const KeyType& key, const ValueType& value) {
+        addNewFrequency(basic_frequency);
+        assert(lists_.contains(basic_frequency) && "FAILED AT INSERT ELEM");
+        auto& new_list = lists_.at(basic_frequency);
+
+        Node new_node;
+        new_node.frequency_ = basic_frequency;
+        new_node.value_ = value;
+
+        new_list.emplace_back(key, new_node);
+        auto node_it = std::prev(new_list.end());
+
+        nodes_.insert({key, node_it});
     }
 
     void deleteElem() {
-        CacheList& least_frequently_list = lists_.at(min_frequency_);
-        std::pair<KeyT, Node> least_frequently_pair = least_frequently_list.front();
+        assert(lists_.contains(min_frequency_) && "FAILED AT DELETE ELEM");
+        auto& least_frequently_list = lists_.at(min_frequency_);
+        auto least_frequently_pair = least_frequently_list.front();
 
         least_frequently_list.pop_front();
         nodes_.erase(least_frequently_pair.first);
     }
 
-    void updateElem(const KeyT& key) {
-        Node& changing_node  = nodes_.at(key);
-        CacheList& prev_list  = lists_.at(changing_node.frequency_);
-        prev_list.erase(changing_node.it_);
+    void updateElem(const KeyType& key) {
+        assert(nodes_.contains(key) && "FAILED AT UPDATE ELEM ACCESS TO NODE");
+        auto changing_node_it = nodes_.at(key);
+        auto changing_node = changing_node_it->second;
+
+        assert(lists_.contains(changing_node.frequency_) && "FAILED AT UPDATE ELEM ACCESS TO LIST");
+        auto& prev_list = lists_.at(changing_node.frequency_);
+        prev_list.erase(changing_node_it);
+
+        if (prev_list.empty())
+            lists_.erase(changing_node.frequency_);
 
         ++(changing_node.frequency_);
 
-        //TODO maybe we need a new list with more frequency, check it
         if (!lists_.contains(changing_node.frequency_))
             addNewFrequency(changing_node.frequency_);
 
-        CacheList& new_list = lists_.at(changing_node.frequency_);
-        new_list.push_back({key, changing_node});
-        changing_node.it_ = std::prev(new_list.end());
+        assert(lists_.contains(changing_node.frequency_) && "FAILED AT UPDATE ELEM UPDATING LIST");
+        auto& new_list = lists_.at(changing_node.frequency_);
+
+        new_list.emplace_back(key, changing_node);
+        nodes_[key] = std::prev(new_list.end());
     }
 };
 

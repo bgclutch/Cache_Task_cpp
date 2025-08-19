@@ -26,7 +26,7 @@ target_compile_options(cache PRIVATE
 
 target_link_libraries(cache PRIVATE m)
 
-set_property(TARGET cache PROPERTY CXX_STANDARD 20)
+set_property(TARGET cache PROPERTY CXX_STANDARD 23)
 
 target_link_options(cache PRIVATE
     $<$<CONFIG:Debug>:-fsanitize=address>
