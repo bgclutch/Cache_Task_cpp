@@ -13,7 +13,7 @@ class lfu_cache_t {
  private:
     using frequency = size_t;
 
-    struct Node{
+    struct Node {
         ValueType value_;
         frequency frequency_;
     };
@@ -33,7 +33,7 @@ class lfu_cache_t {
     bool full() const {return nodes_.size() == cache_size_;}
     size_t retHits() const {return hits_;}
 
-    lfu_cache_t(size_t capacity): cache_size_(capacity){};
+    explicit lfu_cache_t(size_t cache_size): cache_size_(cache_size){};
 
     template <typename Function> void lookupUpdate(Function slowGetPage, const KeyType& key) {
         if (!nodes_.contains(key)) {
@@ -56,6 +56,7 @@ class lfu_cache_t {
         }
     }
 
+ private:
     void addNewFrequency(const frequency new_frequency) {
         lists_.try_emplace(new_frequency);
     }

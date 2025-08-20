@@ -1,17 +1,15 @@
 #include <iostream>
-#include <ctime>
-#include <vector>
-#include "lfu_cache.hpp"
+#include "belady_cache.hpp"
 
-template<typename KeyType, typename ValueType> ValueType slowGetPage(const KeyType key) {
-    return static_cast<ValueType>(key);
+template <typename KeyType> KeyType slowGetPage(const KeyType key) {
+    return key;
 }
 
 int main() {
-    size_t cacheSize, elemCount;
+size_t cacheSize, elemCount;
     std::cin >> cacheSize >> elemCount;
 
-    lfu::lfu_cache_t<int, int> cache{cacheSize};
+    belady::belady_cache_t<int> cache{cacheSize};
 
     if (cacheSize <= 0 || std::cin.bad()) {
         std::cerr << "Cache size should be positive" << std::endl;
@@ -23,6 +21,8 @@ int main() {
         return EXIT_FAILURE;
     }
 
+    std::vector<int> test_data;
+
     clock_t begin = clock();
 
     for (int i = 0; i < elemCount; ++i) {
@@ -32,8 +32,12 @@ int main() {
             std::cerr << "Try to run program again and input correct data" << std::endl;
             return EXIT_FAILURE;
         }
-        cache.lookupUpdate(slowGetPage<int, int>, elem);
+        int new_key = slowGetPage(elem);
+        cache.preloadData(new_key, i);
+        test_data.push_back(new_key);
     }
+
+    cache.runBelady(test_data, elemCount);
 
     clock_t end = clock();
     double execution_time = double (end - begin) / CLOCKS_PER_SEC;
