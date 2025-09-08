@@ -3,9 +3,10 @@
 #include <iostream>
 #include <climits>
 #include <unordered_map>
-#include <unordered_set>
+#include <map>
 #include <queue>
 #include <vector>
+#include <limits>
 
 namespace belady {
 
@@ -16,10 +17,11 @@ class belady_cache_t {
     size_t hits_ = 0;
 
     using Index = size_t;
-    using IndexQueue = typename std::queue<Index>;
+    using Position = size_t;
+    using IndexQueue = std::queue<Index>;
 
     std::unordered_map<KeyType, IndexQueue> elements_;
-    std::unordered_set<KeyType> keys_;
+    std::unordered_map<KeyType, Position> keys_;
 
  public:
     bool full() const {return cache_size_ == keys_.size();}
@@ -27,8 +29,9 @@ class belady_cache_t {
 
     explicit belady_cache_t(size_t cache_size): cache_size_(cache_size){}
 
-    template <typename DataType> void runBelady(const std::vector<DataType>& test_data, const size_t elems) {
-        for (int i = 0; i < elems; ++i) {
+    template <typename DataType>
+    void runBelady(const std::vector<DataType>& test_data, size_t elems) {
+        for (size_t i = 0; i < elems; ++i) {
             KeyType key = test_data[i];
             if (!keys_.contains(key)) {
                 if (full())
@@ -49,37 +52,47 @@ class belady_cache_t {
 
  private:
     void insertElem(const KeyType& key) {
-        if (!elements_[key].empty())
+        size_t newPos;
+        if (!elements_[key].empty()) {
             elements_[key].pop();
-        keys_.insert(key);
+        }
+
+        if (elements_[key].empty())
+            newPos = ULLONG_MAX;
+        else
+            newPos = elements_[key].front();
+
+        keys_.insert(std::make_pair(key, newPos));
     }
 
     void deleteElem() {
-        auto next_appearance = INT_MIN;
-        KeyType key;
-
-        for (auto it = elements_.begin(); it != elements_.end(); ++it) {
-            if (it->second.empty()) {
-                key = it->first;
+        auto next_appearance = 0;
+        auto key = keys_.begin();
+        for (auto it = keys_.begin(); it != keys_.end(); ++it) {
+            if (it->second == ULLONG_MAX) {
+                key = it;
                 break;
             }
 
-            if (it->second.front() > next_appearance) {
-                next_appearance = it->second.front();
-                key = it->first;
+            if (it->second > next_appearance) {
+                next_appearance = it->second;
+                key = it;
             }
         }
 
-        if (!elements_[key].empty())
-            elements_[key].pop();
         keys_.erase(key);
     }
 
     void updateElem(const KeyType& key) {
-        if (!elements_[key].empty())
+        if (!elements_[key].empty()) {
             elements_[key].pop();
-    }
+        }
 
+        if (elements_[key].empty())
+            keys_[key] = ULLONG_MAX;
+        else
+            keys_[key] = elements_[key].front();
+    }
 };
 
 } // namespace belady

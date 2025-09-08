@@ -23,7 +23,6 @@ size_t cacheSize, elemCount;
 
     std::vector<int> test_data;
 
-    clock_t begin = clock();
 
     for (int i = 0; i < elemCount; ++i) {
         int elem;
@@ -37,9 +36,10 @@ size_t cacheSize, elemCount;
         test_data.push_back(new_key);
     }
 
+    clock_t begin = clock();
     cache.runBelady(test_data, elemCount);
-
     clock_t end = clock();
+
     double execution_time = double (end - begin) / CLOCKS_PER_SEC;
     double hits_percentage = (cache.retHits() / static_cast<double> (elemCount)) * 100;
 

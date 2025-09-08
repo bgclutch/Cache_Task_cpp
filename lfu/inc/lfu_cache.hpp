@@ -18,8 +18,8 @@ class lfu_cache_t {
         frequency frequency_;
     };
 
-    using CacheList   = typename std::list<std::pair<KeyType, Node>>;
-    using CacheListIt = typename CacheList::iterator;
+    using CacheList   = std::list<std::pair<KeyType, Node>>;
+    using CacheListIt = CacheList::iterator;
 
     size_t cache_size_ = 0;
     size_t hits_ = 0;
