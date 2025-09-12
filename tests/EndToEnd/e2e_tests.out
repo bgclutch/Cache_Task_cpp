@@ -1,90 +1,50 @@
 test_01.in
 LFU cache result:
-With cache size 387 and 107861 elems
-Hits getted: 13157(Hit ratio: 12.1981%) with execution time 0.089891
-
+40229
 Belady cache result:
-With cache size 387 and 107861 elems
-Hits getted: 44591(Hit ratio: 41.3412%) with execution time 0.459705
-
+102075
 test_02.in
 LFU cache result:
-With cache size 117 and 151977 elems
-Hits getted: 5731(Hit ratio: 3.77097%) with execution time 0.107053
-
+30225
 Belady cache result:
-With cache size 117 and 151977 elems
-Hits getted: 35540(Hit ratio: 23.3851%) with execution time 0.313997
-
+92366
 test_03.in
 LFU cache result:
-With cache size 360 and 198487 elems
-Hits getted: 22522(Hit ratio: 11.3468%) with execution time 0.131938
-
+209781
 Belady cache result:
-With cache size 360 and 198487 elems
-Hits getted: 79903(Hit ratio: 40.256%) with execution time 1.08555
-
+250413
 test_04.in
 LFU cache result:
-With cache size 634 and 280677 elems
-Hits getted: 57387(Hit ratio: 20.4459%) with execution time 0.236932
-
+67917
 Belady cache result:
-With cache size 634 and 280677 elems
-Hits getted: 145634(Hit ratio: 51.8867%) with execution time 1.64281
-
+103506
 test_05.in
 LFU cache result:
-With cache size 330 and 118804 elems
-Hits getted: 12415(Hit ratio: 10.45%) with execution time 0.088648
-
+29373
 Belady cache result:
-With cache size 330 and 118804 elems
-Hits getted: 45611(Hit ratio: 38.3918%) with execution time 0.464106
-
+74260
 test_06.in
 LFU cache result:
-With cache size 1867 and 276001 elems
-Hits getted: 155071(Hit ratio: 56.1849%) with execution time 0.182702
-
+147754
 Belady cache result:
-With cache size 1867 and 276001 elems
-Hits getted: 218520(Hit ratio: 79.1736%) with execution time 1.87527
-
+206414
 test_07.in
 LFU cache result:
-With cache size 2999 and 230738 elems
-Hits getted: 187905(Hit ratio: 81.4365%) with execution time 0.148224
-
+114683
 Belady cache result:
-With cache size 2999 and 230738 elems
-Hits getted: 209117(Hit ratio: 90.6296%) with execution time 0.903567
-
+158833
 test_08.in
 LFU cache result:
-With cache size 1955 and 154160 elems
-Hits getted: 89234(Hit ratio: 57.884%) with execution time 0.10255
-
+55859
 Belady cache result:
-With cache size 1955 and 154160 elems
-Hits getted: 123102(Hit ratio: 79.8534%) with execution time 0.984984
-
+79813
 test_09.in
 LFU cache result:
-With cache size 1938 and 242643 elems
-Hits getted: 140647(Hit ratio: 57.9646%) with execution time 0.156542
-
+194949
 Belady cache result:
-With cache size 1938 and 242643 elems
-Hits getted: 194326(Hit ratio: 80.0872%) with execution time 1.60862
-
+228380
 test_10.in
 LFU cache result:
-With cache size 1530 and 274158 elems
-Hits getted: 127858(Hit ratio: 46.6366%) with execution time 0.172614
-
+110532
 Belady cache result:
-With cache size 1530 and 274158 elems
-Hits getted: 202435(Hit ratio: 73.8388%) with execution time 1.97659
-
+193927

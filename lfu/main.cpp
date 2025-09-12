@@ -1,5 +1,4 @@
 #include <iostream>
-#include <ctime>
 #include <vector>
 #include "lfu_cache.hpp"
 
@@ -23,8 +22,6 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    clock_t begin = clock();
-
     for (int i = 0; i < elemCount; ++i) {
         int elem;
         std::cin >> elem;
@@ -35,12 +32,7 @@ int main() {
         cache.lookupUpdate(slowGetPage<int, int>, elem);
     }
 
-    clock_t end = clock();
-    double execution_time = double (end - begin) / CLOCKS_PER_SEC;
-    double hits_percentage = (cache.retHits() / static_cast<double> (elemCount)) * 100;
-
-    std::cout << "With cache size " << cacheSize << " and " << elemCount << " elems" << std::endl
-              << "Hits getted: " << cache.retHits() << "(Hit ratio: " << hits_percentage << "%) with execution time " << execution_time << std::endl;
+    std::cout << cache.retHits() << std::endl;
 
     return EXIT_SUCCESS;
 }
