@@ -6,7 +6,7 @@
 #include <map>
 #include <queue>
 #include <vector>
-#include <limits>
+#include <cassert>
 
 namespace belady {
 
@@ -31,13 +31,16 @@ class belady_cache_t {
 
     template <typename DataType>
     void runBelady(const std::vector<DataType>& test_data, size_t elems) {
+        assert(test_data.size() >= elems && "UNDERSIZED CACHE");
         for (size_t i = 0; i < elems; ++i) {
             KeyType key = test_data[i];
             if (!keys_.contains(key)) {
+                bool able_to_insert = true;
                 if (full())
-                    deleteElem();
+                    able_to_insert = deleteElem(test_data[i]);
 
-                insertElem(key);
+                if (able_to_insert)
+                    insertElem(key);
             }
             else {
                 ++hits_;
@@ -52,6 +55,7 @@ class belady_cache_t {
 
  private:
     void insertElem(const KeyType& key) {
+        assert(keys_.size() < cache_size_ && "CACHE OVERFLOWED WITHOUT DELETION");
         size_t newPos;
         if (!elements_[key].empty()) {
             elements_[key].pop();
@@ -65,7 +69,7 @@ class belady_cache_t {
         keys_.insert(std::make_pair(key, newPos));
     }
 
-    void deleteElem() {
+    bool deleteElem(const KeyType& next_key) {
         auto next_appearance = 0;
         auto key = keys_.begin();
         for (auto it = keys_.begin(); it != keys_.end(); ++it) {
@@ -80,10 +84,18 @@ class belady_cache_t {
             }
         }
 
-        keys_.erase(key);
+        bool result = needDeletion(key->first, next_key);
+
+        if (result)
+            keys_.erase(key);
+
+        return result;
     }
 
     void updateElem(const KeyType& key) {
+        assert(!elements_.empty() && "NO ELEMENTS");
+        assert(keys_.contains(key) && "NON-EXISTING ELEMENT");
+
         if (!elements_[key].empty()) {
             elements_[key].pop();
         }
@@ -92,6 +104,24 @@ class belady_cache_t {
             keys_[key] = ULLONG_MAX;
         else
             keys_[key] = elements_[key].front();
+    }
+
+    bool needDeletion(const KeyType& prev_key, const KeyType& next_key) {
+        assert(keys_.contains(prev_key) && "NO KEY FOR DELETION");
+        assert(elements_.contains(next_key) && "NO KEY IN ELEMENTS MAP");
+
+        bool result = true;
+
+        if (elements_[next_key].size() <= 1) {
+            result = false;
+            elements_[next_key].pop();
+        }
+        else if (keys_[prev_key] < elements_[next_key].front()) {
+            result = false;
+            elements_[next_key].pop();
+        }
+
+        return result;
     }
 };
 

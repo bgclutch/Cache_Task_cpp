@@ -36,15 +36,10 @@ size_t cacheSize, elemCount;
         test_data.push_back(new_key);
     }
 
-    clock_t begin = clock();
     cache.runBelady(test_data, elemCount);
-    clock_t end = clock();
 
-    double execution_time = double (end - begin) / CLOCKS_PER_SEC;
-    double hits_percentage = (cache.retHits() / static_cast<double> (elemCount)) * 100;
 
-    std::cout << "With cache size " << cacheSize << " and " << elemCount << " elems" << std::endl
-              << "Hits getted: " << cache.retHits() << "(Hit ratio: " << hits_percentage << "%) with execution time " << execution_time << std::endl;
+    std::cout << cache.retHits() << std::endl;
 
     return EXIT_SUCCESS;
 }

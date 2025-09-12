@@ -24,7 +24,7 @@ with open(output_file, 'w') as fout:
             if lfurun.returncode != 0:
                 fout.write(f"ERROR: {lfurun.stderr}\n")
             else:
-                fout.write(lfurun.stdout + "\n")
+                fout.write(lfurun.stdout)
 
             fout.write(f"Belady cache result:\n")
             beladyrun = subprocess.run(
@@ -35,4 +35,4 @@ with open(output_file, 'w') as fout:
             if beladyrun.returncode != 0:
                 fout.write(f"ERROR: {beladyrun.stderr}\n")
             else:
-                fout.write(beladyrun.stdout + "\n")
+                fout.write(beladyrun.stdout)
