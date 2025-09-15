@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 #include "belady_cache.hpp"
 
 template <typename KeyType> KeyType slowGetPage(const KeyType key) {
@@ -37,7 +38,6 @@ size_t cacheSize, elemCount;
     }
 
     cache.runBelady(test_data, elemCount);
-
 
     std::cout << cache.retHits() << std::endl;
 
