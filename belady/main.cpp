@@ -23,7 +23,6 @@ size_t cacheSize, elemCount;
 
     std::vector<int> test_data;
 
-
     for (int i = 0; i < elemCount; ++i) {
         int elem;
         std::cin >> elem;
