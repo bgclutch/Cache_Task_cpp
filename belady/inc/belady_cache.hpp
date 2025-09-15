@@ -68,7 +68,6 @@ class belady_cache_t {
         else
             newPos = elements_[key].front();
 
-
         keys_.insert(std::make_pair(key, newPos));
         sorted_keys_.insert(std::make_pair(newPos, key));
     }
@@ -103,7 +102,6 @@ class belady_cache_t {
             newPos = elements_[key].front();
             keys_[key] = newPos;
         }
-
 
         auto range = sorted_keys_.equal_range(oldPos);
         for (auto it = range.first; it != range.second; ++it) {

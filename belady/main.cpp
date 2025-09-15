@@ -1,5 +1,4 @@
 #include <iostream>
-#include <ctime>
 #include "belady_cache.hpp"
 
 template <typename KeyType> KeyType slowGetPage(const KeyType key) {
