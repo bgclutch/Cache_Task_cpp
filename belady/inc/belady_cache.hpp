@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <map>
 #include <queue>
+#include <set>
 #include <vector>
 #include <cassert>
 
@@ -22,6 +23,7 @@ class belady_cache_t {
 
     std::unordered_map<KeyType, IndexQueue> elements_;
     std::unordered_map<KeyType, Position> keys_;
+    std::multimap<Position, KeyType> sorted_keys_;
 
  public:
     bool full() const {return cache_size_ == keys_.size();}
@@ -67,27 +69,17 @@ class belady_cache_t {
             newPos = elements_[key].front();
 
         keys_.insert(std::make_pair(key, newPos));
+        sorted_keys_.insert(std::make_pair(newPos, key));
     }
 
     bool deleteElem(const KeyType& next_key) {
-        auto next_appearance = 0;
-        auto key = keys_.begin();
-        for (auto it = keys_.begin(); it != keys_.end(); ++it) {
-            if (it->second == ULLONG_MAX) {
-                key = it;
-                break;
-            }
+        auto it = std::prev(sorted_keys_.end());
+        bool result = needDeletion(it->second, next_key);
 
-            if (it->second > next_appearance) {
-                next_appearance = it->second;
-                key = it;
-            }
+        if (result) {
+            keys_.erase(it->second);
+            sorted_keys_.erase(it);
         }
-
-        bool result = needDeletion(key->first, next_key);
-
-        if (result)
-            keys_.erase(key);
 
         return result;
     }
@@ -96,14 +88,30 @@ class belady_cache_t {
         assert(!elements_.empty() && "NO ELEMENTS");
         assert(keys_.contains(key) && "NON-EXISTING ELEMENT");
 
+        Position oldPos = keys_.at(key);
+        Position newPos = ULLONG_MAX;
+
         if (!elements_[key].empty()) {
             elements_[key].pop();
         }
 
-        if (elements_[key].empty())
-            keys_[key] = ULLONG_MAX;
-        else
-            keys_[key] = elements_[key].front();
+        if (elements_[key].empty()) {
+            keys_[key] = newPos;
+        }
+        else {
+            newPos = elements_[key].front();
+            keys_[key] = newPos;
+        }
+
+        auto range = sorted_keys_.equal_range(oldPos);
+        for (auto it = range.first; it != range.second; ++it) {
+            if (it->second == key) {
+                sorted_keys_.erase(it);
+                break;
+            }
+        }
+
+        sorted_keys_.insert(std::make_pair(newPos, key));
     }
 
     bool needDeletion(const KeyType& prev_key, const KeyType& next_key) {
@@ -112,7 +120,7 @@ class belady_cache_t {
 
         bool result = true;
 
-        if (elements_[next_key].size() <= 1) {
+        if (elements_[next_key].size() <= 1 || elements_[next_key].empty()) {
             result = false;
             elements_[next_key].pop();
         }

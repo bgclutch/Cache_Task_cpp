@@ -1,8 +1,8 @@
 test_01.in
 LFU cache result:
-40229
+79876
 Belady cache result:
-102075
+124450
 test_02.in
 LFU cache result:
 30225
@@ -45,6 +45,6 @@ Belady cache result:
 228380
 test_10.in
 LFU cache result:
-110532
+48995
 Belady cache result:
-193927
+95299

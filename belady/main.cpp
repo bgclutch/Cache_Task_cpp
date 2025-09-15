@@ -23,7 +23,6 @@ size_t cacheSize, elemCount;
 
     std::vector<int> test_data;
 
-
     for (int i = 0; i < elemCount; ++i) {
         int elem;
         std::cin >> elem;
@@ -37,7 +36,6 @@ size_t cacheSize, elemCount;
     }
 
     cache.runBelady(test_data, elemCount);
-
 
     std::cout << cache.retHits() << std::endl;
 
