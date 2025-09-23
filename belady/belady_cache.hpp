@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <climits>
 #include <unordered_map>
 #include <map>
@@ -15,7 +14,6 @@ template <typename KeyType>
 class belady_cache_t {
  private:
     size_t cache_size_ = 0;
-    size_t hits_ = 0;
 
     using Index = size_t;
     using Position = size_t;
@@ -27,28 +25,25 @@ class belady_cache_t {
 
  public:
     bool full() const {return cache_size_ == keys_.size();}
-    size_t retHits() const {return hits_;}
-
     explicit belady_cache_t(size_t cache_size): cache_size_(cache_size){}
 
-    template <typename DataType>
-    void runBelady(const std::vector<DataType>& test_data, size_t elems) {
-        assert(test_data.size() >= elems && "UNDERSIZED CACHE");
-        for (size_t i = 0; i < elems; ++i) {
-            KeyType key = test_data[i];
-            if (!keys_.contains(key)) {
-                bool able_to_insert = true;
-                if (full())
-                    able_to_insert = deleteElem(test_data[i]);
+    bool lookupUpdate(const KeyType& key) {
+        bool isHit = false;
 
-                if (able_to_insert)
-                    insertElem(key);
-            }
-            else {
-                ++hits_;
-                updateElem(key);
-            }
+        if (!keys_.contains(key)) {
+            bool able_to_insert = true;
+            if (full())
+                able_to_insert = deleteElem(key);
+
+            if (able_to_insert)
+                insertElem(key);
         }
+        else {
+            isHit = true;
+            updateElem(key);
+        }
+
+        return isHit;
     }
 
     void preloadData(const KeyType& key, const size_t index) {

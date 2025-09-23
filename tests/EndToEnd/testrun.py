@@ -2,8 +2,8 @@ import subprocess
 import glob
 import os
 
-lfu = "../../lfu/build/./cache"
-belady = "../../belady/build/./cache"
+lfu = "../../build/lfu/./lfu"
+belady = "../../build/belady/./belady"
 test_dir = "input_files/"
 
 output_file = "e2e_tests.out"

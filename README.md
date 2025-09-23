@@ -5,7 +5,7 @@ Belady’s optimal cache algorithm in C++. It includes:
 1. An implementation of the LFU cache
 2. An implementation of Belady’s optimal cache algorithm
 3. Python scripts for automated testing and comparison
-   
+
 ## Installation:
 Clone this repository, then reach the project directory:
 ```sh
@@ -14,28 +14,24 @@ cd cache
 ```
 
 ## Building:
-1. Navigate to ```lfu``` or ```belady``` directory:
-```sh
-cd lfu
-```
-Or
-```sh
-cd belady
-```
-2. Build the project:
+1. Build the project:
  ```sh
 cmake -B build
 cmake --build build
 ```
 
-## Usage: 
-1. Navigate to the ```build``` folder inside either ```lfu``` or ```belady```:
+## Usage:
+1. Navigate to the ```build``` folder:
 ```sh
-cd build 
+cd build
 ```
-2. Then run command:
+2. Choose cache to run:
 ```sh
-./cache
+./lfu/lfu
+```
+or
+```sh
+./belady/belady
 ```
 
 ## Running tests:

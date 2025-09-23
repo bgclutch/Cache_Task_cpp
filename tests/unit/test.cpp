@@ -23,35 +23,37 @@ TEST (LFUCacheMethods, IsNotCacheFullTest) {
 
 TEST (LFUCacheMethods, InsertElemTest) {
     size_t cacheSize = 1;
+    size_t cacheHits = 0;
     lfu::lfu_cache_t<int, int> cache{cacheSize};
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    EXPECT_EQ(cache.retHits(), 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    EXPECT_EQ(cacheHits, 1);
 }
 
 TEST (LFUCacheMethods, UpdateElemTest) {
     size_t cacheSize = 2;
+    size_t cacheHits = 0;
     lfu::lfu_cache_t<int, int> cache{cacheSize};
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    cache.lookupUpdate(slowGetPage<int>, 3);
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    cache.lookupUpdate(slowGetPage<int>, 2);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 3);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 2);
 
-    EXPECT_EQ(cache.retHits(), 1);
+    EXPECT_EQ(cacheHits, 1);
 }
 
 TEST (LFUCacheMethods, UpdateElemStressTest) {
     size_t cacheSize = 2;
+    size_t cacheHits = 0;
     lfu::lfu_cache_t<int, int> cache{cacheSize};
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    cache.lookupUpdate(slowGetPage<int>, 1);
-    cache.lookupUpdate(slowGetPage<int>, 2);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 1);
+    cacheHits += cache.lookupUpdate(slowGetPage<int>, 2);
 
-    EXPECT_EQ(cache.retHits(), 3);
+    EXPECT_EQ(cacheHits, 3);
 }
-
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);

@@ -1,10 +1,8 @@
 #pragma once
 
-#include <iostream>
 #include <list>
 #include <unordered_map>
 #include <cassert>
-#include <fstream>
 
 namespace lfu {
 
@@ -22,7 +20,6 @@ class lfu_cache_t {
     using CacheListIt = CacheList::iterator;
 
     size_t cache_size_ = 0;
-    size_t hits_ = 0;
     const frequency basic_frequency = 1;
     frequency min_frequency_ = 0;
 
@@ -31,11 +28,12 @@ class lfu_cache_t {
 
  public:
     bool full() const {return nodes_.size() == cache_size_;}
-    size_t retHits() const {return hits_;}
 
     explicit lfu_cache_t(size_t cache_size): cache_size_(cache_size){};
 
-    template <typename Function> void lookupUpdate(Function slowGetPage, const KeyType& key) {
+    template <typename Function> bool lookupUpdate(Function slowGetPage, const KeyType& key) {
+        bool isHit = 0;
+
         if (!nodes_.contains(key)) {
             if (full())
                 deleteElem();
@@ -46,7 +44,7 @@ class lfu_cache_t {
             min_frequency_ = basic_frequency;
         }
         else {
-            ++hits_;
+            isHit = 1;
             updateElem(key);
 
             for (; min_frequency_ < cache_size_; ++min_frequency_) {
@@ -54,6 +52,7 @@ class lfu_cache_t {
                     break;
             }
         }
+        return isHit;
     }
 
  private:
@@ -66,9 +65,7 @@ class lfu_cache_t {
         assert(lists_.contains(basic_frequency) && "FAILED AT INSERT ELEM");
         auto& new_list = lists_.at(basic_frequency);
 
-        Node new_node;
-        new_node.frequency_ = basic_frequency;
-        new_node.value_ = value;
+        Node new_node{value, basic_frequency};
 
         new_list.emplace_back(key, new_node);
         auto node_it = std::prev(new_list.end());
@@ -97,7 +94,7 @@ class lfu_cache_t {
         if (prev_list.empty())
             lists_.erase(changing_node.frequency_);
 
-        ++(changing_node.frequency_);
+        ++changing_node.frequency_;
 
         if (!lists_.contains(changing_node.frequency_))
             addNewFrequency(changing_node.frequency_);
