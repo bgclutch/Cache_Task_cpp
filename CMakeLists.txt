@@ -2,10 +2,18 @@ cmake_minimum_required(VERSION 3.30)
 
 project(cache)
 
-set(CMAKE_CXX_STANDARD          23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_subdirectory(lfu)
+add_subdirectory(belady)
+add_subdirectory(tests)
 
-set(CMAKE_CXX_FLAGS_DEBUG "
+foreach(target lfu belady tests)
+    target_compile_features(${target} PUBLIC cxx_std_23)
+    option(ENABLE_ASAN OFF)
+endforeach()
+
+foreach(target lfu belady)
+    target_compile_options(${target} PRIVATE
+    $<$<CONFIG:Debug>:
         -Wall
         -Wextra
         -Wpedantic
@@ -13,10 +21,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "
         -Wmissing-declarations
         -Wcast-align
         -Wshadow
-        -Wsign-conversion")
-
-add_compile_options(-fsanitize=address)
-add_link_options(-fsanitize=address)
-
-add_subdirectory(lfu)
-add_subdirectory(belady)
+        -Wsign-conversion>
+    )
+    if(ENABLE_ASAN)
+        target_compile_options(${target} PRIVATE $<$<CONFIG:Debug>: -fsanitize=address>)
+        target_link_options(${target} PRIVATE $<$<CONFIG:Debug>: -fsanitize=address>)
+    endif()
+endforeach()
