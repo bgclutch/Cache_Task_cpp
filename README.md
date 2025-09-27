@@ -9,7 +9,7 @@ Belady’s optimal cache algorithm in C++. It includes:
 ## Installation:
 Clone this repository, then reach the project directory:
 ```sh
-https://github.com/bgclutch/Cache_Task_cpp.git
+git clone https://github.com/bgclutch/Cache_Task_cpp.git
 cd cache
 ```
 

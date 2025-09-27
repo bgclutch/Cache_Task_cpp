@@ -11,12 +11,12 @@ int main() {
     std::cin >> cacheSize >> elemCount;
 
     if (cacheSize == 0 || !std::cin.good()) {
-        std::cerr << "Cache size should be positive" << std::endl;
+        std::cerr << "Cache size should be positive\n";
         return EXIT_FAILURE;
     }
 
     if (elemCount == 0 || !std::cin.good()) {
-        std::cerr << "Elements should exist" << std::endl;
+        std::cerr << "Elements should exist\n";
         return EXIT_FAILURE;
     }
 
@@ -27,7 +27,7 @@ int main() {
         int elem = 0;
         std::cin >> elem;
         if (!std::cin.good()) {
-            std::cerr << "Try to run program again and input correct data" << std::endl;
+            std::cerr << "Try to run program again and input correct data\n";
             return EXIT_FAILURE;
         }
         int new_key = slowGetPage(elem);
