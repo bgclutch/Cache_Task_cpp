@@ -10,7 +10,7 @@ Belady’s optimal cache algorithm in C++. It includes:
 Clone this repository, then reach the project directory:
 ```sh
 git clone https://github.com/bgclutch/Cache_Task_cpp.git
-cd cache
+cd Cache_Task_cpp
 ```
 
 ## Building:
@@ -35,16 +35,27 @@ or
 ```
 
 ## Running tests:
-1. Navigate to the ```tests``` directory:
+For End To End tests:
+1.1 Navigate to the ```tests``` directory:
 ```sh
 cd tests/EndToEnd
 ```
-2. Run default tests with the Python script:
+1.2 Run default tests with the Python script:
 ```sh
 python3 testrun.py
 ```
-3. (Optional) Or ```regenerate``` test cases:
+1.3 (Optional) Or ```regenerate``` test cases:
 ```sh
 python3 testgen.py
 ```
 And run it as in step 2.
+
+For unit tests:
+2.1 Navigate to the ```build``` folder:
+```sh
+cd build
+```
+2. Run unit tests:
+```sh
+./tests/tests
+```
