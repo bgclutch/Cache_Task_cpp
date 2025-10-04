@@ -6,9 +6,10 @@ add_subdirectory(lfu)
 add_subdirectory(belady)
 add_subdirectory(tests)
 
+option(ENABLE_ASAN OFF)
+
 foreach(target lfu belady tests)
     target_compile_features(${target} PUBLIC cxx_std_23)
-    option(ENABLE_ASAN OFF)
 endforeach()
 
 foreach(target lfu belady)

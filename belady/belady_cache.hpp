@@ -4,9 +4,9 @@
 #include <unordered_map>
 #include <map>
 #include <queue>
-#include <set>
 #include <vector>
 #include <cassert>
+#include <cstddef>
 
 namespace belady {
 
@@ -53,11 +53,11 @@ class belady_cache_t {
  private:
     void insertElem(const KeyType& key) {
         assert(keys_.size() < cache_size_ && "CACHE OVERFLOWED WITHOUT DELETION");
-        size_t newPos;
         if (!elements_[key].empty()) {
             elements_[key].pop();
         }
 
+        size_t newPos = 0;
         if (elements_[key].empty())
             newPos = ULLONG_MAX;
         else

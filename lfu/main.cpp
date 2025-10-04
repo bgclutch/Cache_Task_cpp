@@ -1,6 +1,5 @@
-#include <iostream>
-#include <vector>
 #include "lfu_cache.hpp"
+#include <iostream>
 
 template<typename KeyType, typename ValueType> ValueType slowGetPage(const KeyType key) {
     return static_cast<ValueType>(key);
