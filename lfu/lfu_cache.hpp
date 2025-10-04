@@ -3,6 +3,7 @@
 #include <list>
 #include <unordered_map>
 #include <cassert>
+#include <cstddef>
 
 namespace lfu {
 
@@ -76,10 +77,10 @@ class lfu_cache_t {
     void deleteElem() {
         assert(lists_.contains(min_frequency_) && "FAILED AT DELETE ELEM");
         auto& least_frequently_list = lists_.at(min_frequency_);
-        auto least_frequently_pair = least_frequently_list.front();
+        auto& least_frequently_pair = least_frequently_list.front();
 
-        least_frequently_list.pop_front();
         nodes_.erase(least_frequently_pair.first);
+        least_frequently_list.pop_front();
     }
 
     void updateElem(const KeyType& key) {
