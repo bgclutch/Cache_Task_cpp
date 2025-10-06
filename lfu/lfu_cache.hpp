@@ -40,7 +40,7 @@ class lfu_cache_t {
             if (full())
                 deleteElem();
 
-            insertElem(key, slowGetPage(key));
+            insertElem(key, slowGetPage);
             min_frequency_ = basic_frequency;
         }
         else {
@@ -59,13 +59,13 @@ class lfu_cache_t {
     void addNewFrequency(const frequency new_frequency) {
         lists_.try_emplace(new_frequency);
     }
-
-    void insertElem(const KeyType& key, const ValueType& value) {
+    template <typename Function>
+    void insertElem(const KeyType& key, Function slowGetPage) {
         addNewFrequency(basic_frequency);
         assert(lists_.contains(basic_frequency) && "FAILED AT INSERT ELEM");
         auto& new_list = lists_.at(basic_frequency);
 
-        Node new_node{value, basic_frequency};
+        Node new_node{slowGetPage(key), basic_frequency};
 
         new_list.emplace_back(key, new_node);
         auto node_it = std::prev(new_list.end());
